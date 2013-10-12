@@ -6,8 +6,8 @@ class categoria(models.Model):
 	"""Control de categorias"""
 	nombre 		= models.CharField(max_length = 50, verbose_name = 'Nombre')
 	descripcion = models.TextField(verbose_name = 'Descripcion', blank = True, null = True)
-	icono 		= models.ImageFile(upload_to = 'uploads/iconos/', blank = True, null = True)
-	slug 		= models.slugField(max_length = 100, blank = True, null = True)
+	icono 		= models.ImageField(upload_to = 'uploads/iconos/', blank = True, null = True)
+	slug 		= models.SlugField(max_length = 100, blank = True, null = True)
 	class Meta:
 		verbose_name 		= u'Categorias'
 		verbose_name_plural = u'Categorias' 
@@ -26,14 +26,14 @@ class categoria(models.Model):
 
 class subCategoria(models.Model):
 	"""Control de sub Categorias"""
-	categoria 	= ForeignKey(categoria)
+	categoria 	= models.ForeignKey(categoria)
 	nombre 		= models.CharField(max_length = 50, verbose_name = 'Nombre')
 	descripcion = models.TextField(verbose_name = 'Descripcion', blank = True, null = True)
-	icono 		= models.ImageFile(upload_to = 'uploads/iconos/', black = True, null = True)
-	slug 		= models.slugField(max_length = 100, default = '', blank = True, null = True)
+	icono 		= models.ImageField(upload_to = 'uploads/iconos/', blank = True, null = True)
+	slug 		= models.SlugField(max_length = 100, default = '', blank = True, null = True)
 	class Meta:
 		verbose_name 		= u'Sub-categoria'
-		verbose_name_plural = u'Sub-categoria'
+		verbose_name_plural = u'Sub-categorias'
 
 	def get_absolute_url(self):
 		'''Creamos la url amigable'''
@@ -50,7 +50,7 @@ class subCategoria(models.Model):
 class estadoPais(models.Model):
 	"""Control de estados del Pais"""
 	nombre = models.CharField(max_length = 50, verbose_name = 'Nombre')
-	slug   = models.slugField(max_length = 100, default = '', blank = True, null = True)
+	slug   = models.SlugField(max_length = 100, default = '', blank = True, null = True)
 	class Meta:
 		verbose_name 		= u'Estado del Pais'
 		verbose_name_plural = u'Estados del Pais'
@@ -69,9 +69,9 @@ class estadoPais(models.Model):
 class zonaCiudad(models.Model):
 	"""Control de zonas, las ciudades que pertencen a la zona"""
 	nombre 		= models.CharField(max_length = 50, verbose_name = 'Nombre de la zona')
-	slug 		= models.slugField(max_length = 100, blank = True, null = True)
+	slug 		= models.SlugField(max_length = 100, blank = True, null = True)
 	descripcion = models.TextField(verbose_name = 'Descripcion')
-	icono 		= models.ImageFile(upload_to = 'uploads/iconos/', blank = True, null = True)
+	icono 		= models.ImageField(upload_to = 'uploads/iconos/', blank = True, null = True)
 	class Meta:
 		verbose_name 		= u'Zona'
 		verbose_name_plural = u'Zonas'
@@ -91,11 +91,11 @@ class zonaCiudad(models.Model):
 		
 class ciudad(models.Model):
 	"""Control de ciudades"""
-	estadoPais 		= models.ForeignKey(estadosPais, verbose_name = 'Estado')
+	estadoPais 		= models.ForeignKey(estadoPais, verbose_name = 'Estado')
 	zona 			= models.ForeignKey(zonaCiudad, verbose_name = 'Zona')
 	nombre 		 	= models.CharField(max_length = 50, verbose_name = 'Nombre')
-	imgDescritiva 	= models.ImageFile(upload_to = 'uploads/img/', blank = True, null = True, verbose_name = 'Emblema')
-	slug   			= models.slugField(max_length = 100, default = '', blank = True, null = True)
+	imgDescritiva 	= models.ImageField(upload_to = 'uploads/img/', blank = True, null = True, verbose_name = 'Emblema')
+	slug   			= models.SlugField(max_length = 100, default = '', blank = True, null = True)
 	class Meta:
 		verbose_name 		= u'Ciudad'
 		verbose_name_plural = u'Ciudades'
@@ -112,22 +112,46 @@ class ciudad(models.Model):
 	def __unicode__(self):
 		return self.nombre
 
+class formaPago(models.Model):
+	"""Formas de pago que acepta el negocio"""
+	nombre 	= models.CharField(max_length = 50, verbose_name = 'Nombre del metodo de pago')
+	icono 	= models.ImageField(upload_to = '/uploads/iconos/', blank = True, null = True)
+	class Meta:
+		verbose_name 		= u'Metodo de pago'
+		verbose_name_plural = u'Metodos de pago'
+
+	def __unicode__(self):
+		return self.nombre
+
+class etiquetas(models.Model):
+	"""Etiquetas que describen al negocio"""
+	nombre = models.CharField(max_length = 100, verbose_name = 'Nombre de la etiqueta')
+	icono = models.ImageField(upload_to = 'uploads/iconos/', blank = True, null = True)
+
+	class Meta:
+		verbose_name = u'Etiqueta'
+		verbose_name_plural = u'Etiquetas'
+
+	def __unicode__(self):
+		return self.nombre
+
 class negocio(models.Model):
 	"""Control del negocio"""
 	usuario 		= models.ForeignKey(User)
 	subCategoria 	= models.ForeignKey(subCategoria, verbose_name = 'Categoria')
 	nombreEmpresa 	= models.CharField(max_length = 100, verbose_name = 'Nombre del la empresa')
-	slug 			= models.slugField(max_length = 200, default = '', blank = True, null = True)
+	slug 			= models.SlugField(max_length = 200, default = '', blank = True, null = True)
 	descripcion 	= models.TextField(verbose_name = 'Descripcion de la empresa')
 	direccion 	  	= models.CharField(max_length = 100, verbose_name = 'Direccion')
 	colonia			= models.CharField(max_length = 100, verbose_name = 'Colonia')
 	ciudad 			= models.ForeignKey(ciudad, verbose_name = 'Ciudad')
 	telefonos 		= models.TextField()
 	horario			= models.TextField(verbose_name = 'Horarios de atencion')
-	logotipo 		= models.ImageFile(upload_to = 'uploads/logotipos/', verbose_name = 'Logotipo')
-	imgDescritiva	= models.ImageFile(upload_to = 'uploads/img/', verbose_name = 'Imagen descritiva')
-	paginaWeb		= models.UrlField(max_length = 200, verbose_name = 'Pagina web', blank = True, null = True)
-	tags			= models.CharField(max_length = 300, verbose_name = 'Etiquetas')
+	formasPagos 	= models.ManyToManyField(formaPago, verbose_name = 'Formas de pago')
+	logotipo 		= models.ImageField(upload_to = 'uploads/logotipos/', verbose_name = 'Logotipo')
+	imgDescritiva	= models.ImageField(upload_to = 'uploads/img/', verbose_name = 'Imagen descritiva')
+	paginaWeb		= models.URLField(max_length = 200, verbose_name = 'Pagina web', blank = True, null = True)
+	etiquetas 		= models.ManyToManyField(etiquetas, verbose_name = 'Palabras clave')
 	mapa			= models.TextField(verbose_name = 'Mapa de ubicacion')
 	fechRegistro 	= models.DateTimeField(auto_now = True)
 	fechVence 		= models.DateTimeField(verbose_name = 'Fecha de venciemto', auto_now = False)
@@ -150,3 +174,17 @@ class negocio(models.Model):
 
 	def __unicode__(self):
 		return self.nombreEmpresa
+
+class comentarioNegocio(models.Model):
+	"""Comentarios hacerca del negocio"""
+	negocio 	= models.ForeignKey(negocio)
+	user 		= models.ForeignKey(User,verbose_name = 'Usuario')
+	comentario 	= models.TextField(verbose_name = 'Comentario')
+	aprobado 	= models.BooleanField(verbose_name = 'Aprobado', default = False)
+
+	class Meta:
+		verbose_name 		= 'Comentario'
+		verbose_name_plural = 'Comentarios'
+
+	def __unicode__(self):
+		return self.comentario
