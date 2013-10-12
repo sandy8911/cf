@@ -8,7 +8,9 @@
 *.so
 *.pyc
 
-=======
 >>>>>>> a37af5140cf2d1f98cd08fb8d1328809ba417e76
 # Settings files
 settings.py
+
+#uploads
+uploads/
