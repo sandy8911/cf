@@ -52,6 +52,9 @@ USE_TZ = True
 # Example: "/var/www/example.com/media/"
 MEDIA_ROOT = ''
 
+#Definir el perfil de los usuarios
+AUTH_PROFILE_MODULE = 'userperfil.usuarioPerfil'
+
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
@@ -120,10 +123,12 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_admin_bootstrapped',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+    'userperfil',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
